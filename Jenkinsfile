@@ -379,8 +379,10 @@ def prepare() {
           script: './ci/scripts/git_change_docs.sh',
           label: 'Check for docs only changes',
         )
-        skip_ci = should_skip_ci(env.CHANGE_ID)
-        skip_slow_tests = should_skip_slow_tests(env.CHANGE_ID)
+        // skip_ci = should_skip_ci(env.CHANGE_ID)
+        // skip_slow_tests = should_skip_slow_tests(env.CHANGE_ID)
+        skip_ci = false
+        skip_slow_tests =false
         rebuild_docker_images = sh (
           returnStatus: true,
           script: './ci/scripts/git_change_docker.sh',
