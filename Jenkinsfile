@@ -187,7 +187,7 @@ def docker_init(image) {
 
 def should_skip_slow_tests(pr_number) {
   withCredentials([string(
-    credentialsId: 'tvm-bot-jenkins-reader',
+    credentialsId: '881a7219-25dc-4939-a125-5f3093f67058',
     variable: 'GITHUB_TOKEN',
   )]) {
     // Exit code of 1 means run slow tests, exit code of 0 means skip slow tests
@@ -249,7 +249,7 @@ def should_skip_ci(pr_number) {
     return true
   }
   withCredentials([string(
-    credentialsId: 'tvm-bot-jenkins-reader',
+    credentialsId: '881a7219-25dc-4939-a125-5f3093f67058',
     variable: 'GITHUB_TOKEN',
     )]) {
     // Exit code of 1 means run full CI (or the script had an error, so run
@@ -269,7 +269,7 @@ def check_pr(pr_number) {
     return false
   }
   withCredentials([string(
-    credentialsId: 'tvm-bot-jenkins-reader',
+    credentialsId: '881a7219-25dc-4939-a125-5f3093f67058',
     variable: 'GITHUB_TOKEN',
     )]) {
     sh (
