@@ -198,7 +198,8 @@ def should_skip_slow_tests(pr_number) {
       label: 'Check if CI should run slow tests',
     )
   }
-  return result == 0
+  // return result == 0
+  return 1 == 0
 }
 
 def cancel_previous_build() {
@@ -261,7 +262,8 @@ def should_skip_ci(pr_number) {
       label: 'Check if CI should be skipped',
     )
   }
-  return git_skip_ci_code == 0
+  // return git_skip_ci_code == 0
+  return 1 == 0
 }
 
 def check_pr(pr_number) {
@@ -287,7 +289,7 @@ def prepare() {
       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/prepare") {
         init_git()
 
-        check_pr(env.CHANGE_ID)
+        // check_pr(env.CHANGE_ID)
 
         if (env.DETERMINE_DOCKER_IMAGES == 'yes') {
           sh(
