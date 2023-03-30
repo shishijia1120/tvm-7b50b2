@@ -138,7 +138,8 @@ def init_git() {
     ).trim()
   }
   sh (
-    script: "git -c user.name=TVM-Jenkins -c user.email=jenkins@tvm.apache.org merge ${upstream_revision}",
+    // script: "git -c user.name=TVM-Jenkins -c user.email=jenkins@tvm.apache.org merge ${upstream_revision}",
+    script: "git -c user.name=ssj -c user.email=3319294576@qq.com merge ${upstream_revision}",
     label: 'Merge to origin/v0.10.0'
   )
 
@@ -187,7 +188,7 @@ def docker_init(image) {
 
 def should_skip_slow_tests(pr_number) {
   withCredentials([string(
-    credentialsId: '881a7219-25dc-4939-a125-5f3093f67058',
+    credentialsId: '07839001-1dfc-4d2a-b074-5b152b5196f',
     variable: 'GITHUB_TOKEN',
   )]) {
     // Exit code of 1 means run slow tests, exit code of 0 means skip slow tests
@@ -249,7 +250,7 @@ def should_skip_ci(pr_number) {
     return true
   }
   withCredentials([string(
-    credentialsId: '881a7219-25dc-4939-a125-5f3093f67058',
+    credentialsId: '07839001-1dfc-4d2a-b074-5b152b5196f',
     variable: 'GITHUB_TOKEN',
     )]) {
     // Exit code of 1 means run full CI (or the script had an error, so run
@@ -269,7 +270,7 @@ def check_pr(pr_number) {
     return false
   }
   withCredentials([string(
-    credentialsId: '881a7219-25dc-4939-a125-5f3093f67058',
+    credentialsId: '07839001-1dfc-4d2a-b074-5b152b5196f',
     variable: 'GITHUB_TOKEN',
     )]) {
     sh (
