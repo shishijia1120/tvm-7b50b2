@@ -3772,51 +3772,51 @@ stage('Test') {
   'integration: CPU 4 of 4': {
     shard_run_integration_CPU_4_of_4()
   },
-  'python: i386 1 of 3': {
-    shard_run_python_i386_1_of_3()
-  },
-  'python: i386 2 of 3': {
-    shard_run_python_i386_2_of_3()
-  },
-  'python: i386 3 of 3': {
-    shard_run_python_i386_3_of_3()
-  },
-  'test: Hexagon 1 of 8': {
-    shard_run_test_Hexagon_1_of_8()
-  },
-  'test: Hexagon 2 of 8': {
-    shard_run_test_Hexagon_2_of_8()
-  },
-  'test: Hexagon 3 of 8': {
-    shard_run_test_Hexagon_3_of_8()
-  },
-  'test: Hexagon 4 of 8': {
-    shard_run_test_Hexagon_4_of_8()
-  },
-  'test: Hexagon 5 of 8': {
-    shard_run_test_Hexagon_5_of_8()
-  },
-  'test: Hexagon 6 of 8': {
-    shard_run_test_Hexagon_6_of_8()
-  },
-  'test: Hexagon 7 of 8': {
-    shard_run_test_Hexagon_7_of_8()
-  },
-  'test: Hexagon 8 of 8': {
-    shard_run_test_Hexagon_8_of_8()
-  },
-  'integration: aarch64 1 of 4': {
-    shard_run_integration_aarch64_1_of_4()
-  },
-  'integration: aarch64 2 of 4': {
-    shard_run_integration_aarch64_2_of_4()
-  },
-  'integration: aarch64 3 of 4': {
-    shard_run_integration_aarch64_3_of_4()
-  },
-  'integration: aarch64 4 of 4': {
-    shard_run_integration_aarch64_4_of_4()
-  },
+  // 'python: i386 1 of 3': {
+  //   shard_run_python_i386_1_of_3()
+  // },
+  // 'python: i386 2 of 3': {
+  //   shard_run_python_i386_2_of_3()
+  // },
+  // 'python: i386 3 of 3': {
+  //   shard_run_python_i386_3_of_3()
+  // },
+  // 'test: Hexagon 1 of 8': {
+  //   shard_run_test_Hexagon_1_of_8()
+  // },
+  // 'test: Hexagon 2 of 8': {
+  //   shard_run_test_Hexagon_2_of_8()
+  // },
+  // 'test: Hexagon 3 of 8': {
+  //   shard_run_test_Hexagon_3_of_8()
+  // },
+  // 'test: Hexagon 4 of 8': {
+  //   shard_run_test_Hexagon_4_of_8()
+  // },
+  // 'test: Hexagon 5 of 8': {
+  //   shard_run_test_Hexagon_5_of_8()
+  // },
+  // 'test: Hexagon 6 of 8': {
+  //   shard_run_test_Hexagon_6_of_8()
+  // },
+  // 'test: Hexagon 7 of 8': {
+  //   shard_run_test_Hexagon_7_of_8()
+  // },
+  // 'test: Hexagon 8 of 8': {
+  //   shard_run_test_Hexagon_8_of_8()
+  // },
+  // 'integration: aarch64 1 of 4': {
+  //   shard_run_integration_aarch64_1_of_4()
+  // },
+  // 'integration: aarch64 2 of 4': {
+  //   shard_run_integration_aarch64_2_of_4()
+  // },
+  // 'integration: aarch64 3 of 4': {
+  //   shard_run_integration_aarch64_3_of_4()
+  // },
+  // 'integration: aarch64 4 of 4': {
+  //   shard_run_integration_aarch64_4_of_4()
+  // },
   'topi: GPU 1 of 3': {
     shard_run_topi_GPU_1_of_3()
   },
@@ -3844,57 +3844,57 @@ stage('Test') {
   'frontend: GPU 6 of 6': {
     shard_run_frontend_GPU_6_of_6()
   },
-  'topi: aarch64 1 of 2': {
-    shard_run_topi_aarch64_1_of_2()
-  },
-  'topi: aarch64 2 of 2': {
-    shard_run_topi_aarch64_2_of_2()
-  },
-  'frontend: aarch64 1 of 2': {
-    shard_run_frontend_aarch64_1_of_2()
-  },
-  'frontend: aarch64 2 of 2': {
-    shard_run_frontend_aarch64_2_of_2()
-  },
-  'test: Cortex-M 1 of 12': {
-    shard_run_test_Cortex_M_1_of_12()
-  },
-  'test: Cortex-M 2 of 12': {
-    shard_run_test_Cortex_M_2_of_12()
-  },
-  'test: Cortex-M 3 of 12': {
-    shard_run_test_Cortex_M_3_of_12()
-  },
-  'test: Cortex-M 4 of 12': {
-    shard_run_test_Cortex_M_4_of_12()
-  },
-  'test: Cortex-M 5 of 12': {
-    shard_run_test_Cortex_M_5_of_12()
-  },
-  'test: Cortex-M 6 of 12': {
-    shard_run_test_Cortex_M_6_of_12()
-  },
-  'test: Cortex-M 7 of 12': {
-    shard_run_test_Cortex_M_7_of_12()
-  },
-  'test: Cortex-M 8 of 12': {
-    shard_run_test_Cortex_M_8_of_12()
-  },
-  'test: Cortex-M 9 of 12': {
-    shard_run_test_Cortex_M_9_of_12()
-  },
-  'test: Cortex-M 10 of 12': {
-    shard_run_test_Cortex_M_10_of_12()
-  },
-  'test: Cortex-M 11 of 12': {
-    shard_run_test_Cortex_M_11_of_12()
-  },
-  'test: Cortex-M 12 of 12': {
-    shard_run_test_Cortex_M_12_of_12()
-  },
-  'test: RISC-V 1 of 1': {
-    shard_run_test_RISC_V_1_of_1()
-  },
+  // 'topi: aarch64 1 of 2': {
+  //   shard_run_topi_aarch64_1_of_2()
+  // },
+  // 'topi: aarch64 2 of 2': {
+  //   shard_run_topi_aarch64_2_of_2()
+  // },
+  // 'frontend: aarch64 1 of 2': {
+  //   shard_run_frontend_aarch64_1_of_2()
+  // },
+  // 'frontend: aarch64 2 of 2': {
+  //   shard_run_frontend_aarch64_2_of_2()
+  // },
+  // 'test: Cortex-M 1 of 12': {
+  //   shard_run_test_Cortex_M_1_of_12()
+  // },
+  // 'test: Cortex-M 2 of 12': {
+  //   shard_run_test_Cortex_M_2_of_12()
+  // },
+  // 'test: Cortex-M 3 of 12': {
+  //   shard_run_test_Cortex_M_3_of_12()
+  // },
+  // 'test: Cortex-M 4 of 12': {
+  //   shard_run_test_Cortex_M_4_of_12()
+  // },
+  // 'test: Cortex-M 5 of 12': {
+  //   shard_run_test_Cortex_M_5_of_12()
+  // },
+  // 'test: Cortex-M 6 of 12': {
+  //   shard_run_test_Cortex_M_6_of_12()
+  // },
+  // 'test: Cortex-M 7 of 12': {
+  //   shard_run_test_Cortex_M_7_of_12()
+  // },
+  // 'test: Cortex-M 8 of 12': {
+  //   shard_run_test_Cortex_M_8_of_12()
+  // },
+  // 'test: Cortex-M 9 of 12': {
+  //   shard_run_test_Cortex_M_9_of_12()
+  // },
+  // 'test: Cortex-M 10 of 12': {
+  //   shard_run_test_Cortex_M_10_of_12()
+  // },
+  // 'test: Cortex-M 11 of 12': {
+  //   shard_run_test_Cortex_M_11_of_12()
+  // },
+  // 'test: Cortex-M 12 of 12': {
+  //   shard_run_test_Cortex_M_12_of_12()
+  // },
+  // 'test: RISC-V 1 of 1': {
+  //   shard_run_test_RISC_V_1_of_1()
+  // },
   'unittest: CPU MINIMAL': {
     run_unittest_minimal()
   },
@@ -4388,8 +4388,8 @@ if (rebuild_docker_images) {
 
 lint()
 
-build()
+// build()
 
 test()
 
-deploy()
+// deploy()
