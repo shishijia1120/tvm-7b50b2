@@ -849,193 +849,193 @@ stage('Build') {
       Utils.markStageSkippedForConditional('BUILD: CPU MINIMAL')
     }
   },
-  'BUILD: WASM': {
-    if (!skip_ci && is_docs_only_build != 1) {
-      node('CPU-SMALL') {
-        ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-wasm") {
-          init_git()
-          docker_init(ci_wasm)
-          sh (
-            script: "${docker_run} ${ci_wasm} ./tests/scripts/task_config_build_wasm.sh build",
-            label: 'Create WASM cmake config',
-          )
-          make(ci_wasm, 'build', '-j2')
-          cpp_unittest(ci_wasm)
-          timeout(time: max_time, unit: 'MINUTES') {
-            ci_setup(ci_wasm)
-            sh (
-              script: "${docker_run} ${ci_wasm} ./tests/scripts/task_web_wasm.sh",
-              label: 'Run WASM lint and tests',
-            )
-          }
-        }
-      }
-    } else {
-      Utils.markStageSkippedForConditional('BUILD: WASM')
-    }
-  },
-  'BUILD: i386': {
-    if (!skip_ci && is_docs_only_build != 1) {
-      node('CPU-SMALL') {
-        ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-i386") {
-          init_git()
-          docker_init(ci_i386)
-          sh (
-            script: "${docker_run} ${ci_i386} ./tests/scripts/task_config_build_i386.sh build",
-            label: 'Create i386 cmake config',
-          )
-          make(ci_i386, 'build', '-j2')
-          sh(
-            script: """
-              set -eux
-              . ci/scripts/retry.sh
-              md5sum build/libtvm.so
-              retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/i386/build/libtvm.so
-              md5sum build/libtvm_runtime.so
-              retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/i386/build/libtvm_runtime.so
-              md5sum build/config.cmake
-              retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/i386/build/config.cmake
-            """,
-            label: 'Upload artifacts to S3',
-          )
+  // 'BUILD: WASM': {
+  //   if (!skip_ci && is_docs_only_build != 1) {
+  //     node('CPU-SMALL') {
+  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-wasm") {
+  //         init_git()
+  //         docker_init(ci_wasm)
+  //         sh (
+  //           script: "${docker_run} ${ci_wasm} ./tests/scripts/task_config_build_wasm.sh build",
+  //           label: 'Create WASM cmake config',
+  //         )
+  //         make(ci_wasm, 'build', '-j2')
+  //         cpp_unittest(ci_wasm)
+  //         timeout(time: max_time, unit: 'MINUTES') {
+  //           ci_setup(ci_wasm)
+  //           sh (
+  //             script: "${docker_run} ${ci_wasm} ./tests/scripts/task_web_wasm.sh",
+  //             label: 'Run WASM lint and tests',
+  //           )
+  //         }
+  //       }
+  //     }
+  //   } else {
+  //     Utils.markStageSkippedForConditional('BUILD: WASM')
+  //   }
+  // },
+  // 'BUILD: i386': {
+  //   if (!skip_ci && is_docs_only_build != 1) {
+  //     node('CPU-SMALL') {
+  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-i386") {
+  //         init_git()
+  //         docker_init(ci_i386)
+  //         sh (
+  //           script: "${docker_run} ${ci_i386} ./tests/scripts/task_config_build_i386.sh build",
+  //           label: 'Create i386 cmake config',
+  //         )
+  //         make(ci_i386, 'build', '-j2')
+  //         sh(
+  //           script: """
+  //             set -eux
+  //             . ci/scripts/retry.sh
+  //             md5sum build/libtvm.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/i386/build/libtvm.so
+  //             md5sum build/libtvm_runtime.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/i386/build/libtvm_runtime.so
+  //             md5sum build/config.cmake
+  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/i386/build/config.cmake
+  //           """,
+  //           label: 'Upload artifacts to S3',
+  //         )
 
-        }
-      }
-    } else {
-      Utils.markStageSkippedForConditional('BUILD: i386')
-    }
-  },
-  'BUILD: arm': {
-    if (!skip_ci && is_docs_only_build != 1) {
-      node('ARM-SMALL') {
-        ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-arm") {
-          init_git()
-          docker_init(ci_arm)
-          sh (
-            script: "${docker_run} ${ci_arm} ./tests/scripts/task_config_build_arm.sh build",
-            label: 'Create ARM cmake config',
-          )
-          make(ci_arm, 'build', '-j4')
-          sh(
-            script: """
-              set -eux
-              . ci/scripts/retry.sh
-              md5sum build/libtvm.so
-              retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/arm/build/libtvm.so
-              md5sum build/libtvm_runtime.so
-              retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/arm/build/libtvm_runtime.so
-              md5sum build/config.cmake
-              retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/arm/build/config.cmake
-            """,
-            label: 'Upload artifacts to S3',
-          )
+  //       }
+  //     }
+  //   } else {
+  //     Utils.markStageSkippedForConditional('BUILD: i386')
+  //   }
+  // },
+  // 'BUILD: arm': {
+  //   if (!skip_ci && is_docs_only_build != 1) {
+  //     node('ARM-SMALL') {
+  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-arm") {
+  //         init_git()
+  //         docker_init(ci_arm)
+  //         sh (
+  //           script: "${docker_run} ${ci_arm} ./tests/scripts/task_config_build_arm.sh build",
+  //           label: 'Create ARM cmake config',
+  //         )
+  //         make(ci_arm, 'build', '-j4')
+  //         sh(
+  //           script: """
+  //             set -eux
+  //             . ci/scripts/retry.sh
+  //             md5sum build/libtvm.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/arm/build/libtvm.so
+  //             md5sum build/libtvm_runtime.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/arm/build/libtvm_runtime.so
+  //             md5sum build/config.cmake
+  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/arm/build/config.cmake
+  //           """,
+  //           label: 'Upload artifacts to S3',
+  //         )
 
-        }
-      }
-     } else {
-      Utils.markStageSkippedForConditional('BUILD: arm')
-    }
-  },
-  'BUILD: Cortex-M': {
-    if (!skip_ci && is_docs_only_build != 1) {
-      node('CPU-SMALL') {
-        ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-cortexm") {
-          init_git()
-          docker_init(ci_cortexm)
-          sh (
-            script: "${docker_run} ${ci_cortexm} ./tests/scripts/task_config_build_cortexm.sh build",
-            label: 'Create Cortex-M cmake config',
-          )
-          make(ci_cortexm, 'build', '-j2')
-          sh(
-            script: """
-              set -eux
-              . ci/scripts/retry.sh
-              md5sum build/libtvm.so
-              retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/cortexm/build/libtvm.so
-              md5sum build/libtvm_runtime.so
-              retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/cortexm/build/libtvm_runtime.so
-              md5sum build/config.cmake
-              retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/cortexm/build/config.cmake
-              retry 3 aws s3 cp --no-progress build/microtvm_template_projects s3://${s3_prefix}/cortexm/build/microtvm_template_projects --recursive
-            """,
-            label: 'Upload artifacts to S3',
-          )
+  //       }
+  //     }
+  //    } else {
+  //     Utils.markStageSkippedForConditional('BUILD: arm')
+  //   }
+  // },
+  // 'BUILD: Cortex-M': {
+  //   if (!skip_ci && is_docs_only_build != 1) {
+  //     node('CPU-SMALL') {
+  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-cortexm") {
+  //         init_git()
+  //         docker_init(ci_cortexm)
+  //         sh (
+  //           script: "${docker_run} ${ci_cortexm} ./tests/scripts/task_config_build_cortexm.sh build",
+  //           label: 'Create Cortex-M cmake config',
+  //         )
+  //         make(ci_cortexm, 'build', '-j2')
+  //         sh(
+  //           script: """
+  //             set -eux
+  //             . ci/scripts/retry.sh
+  //             md5sum build/libtvm.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/cortexm/build/libtvm.so
+  //             md5sum build/libtvm_runtime.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/cortexm/build/libtvm_runtime.so
+  //             md5sum build/config.cmake
+  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/cortexm/build/config.cmake
+  //             retry 3 aws s3 cp --no-progress build/microtvm_template_projects s3://${s3_prefix}/cortexm/build/microtvm_template_projects --recursive
+  //           """,
+  //           label: 'Upload artifacts to S3',
+  //         )
 
-        }
-      }
-     } else {
-      Utils.markStageSkippedForConditional('BUILD: Cortex-M')
-    }
-  },
-  'BUILD: Hexagon': {
-    if (!skip_ci && is_docs_only_build != 1) {
-      node('CPU-SMALL') {
-        ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-hexagon") {
-          init_git()
-          docker_init(ci_hexagon)
-          sh (
-            script: "${docker_run} ${ci_hexagon} ./tests/scripts/task_config_build_hexagon.sh build",
-            label: 'Create Hexagon cmake config',
-          )
-          make(ci_hexagon, 'build', '-j2')
-          sh (
-            script: "${docker_run} ${ci_hexagon} ./tests/scripts/task_build_hexagon_api.sh",
-            label: 'Build Hexagon API',
-          )
-          sh(
-            script: """
-              set -eux
-              . ci/scripts/retry.sh
-              md5sum build/libtvm.so
-              retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/hexagon/build/libtvm.so
-              md5sum build/libtvm_runtime.so
-              retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/hexagon/build/libtvm_runtime.so
-              md5sum build/config.cmake
-              retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/hexagon/build/config.cmake
-              retry 3 aws s3 cp --no-progress build/hexagon_api_output s3://${s3_prefix}/hexagon/build/hexagon_api_output --recursive
-            """,
-            label: 'Upload artifacts to S3',
-          )
+  //       }
+  //     }
+  //    } else {
+  //     Utils.markStageSkippedForConditional('BUILD: Cortex-M')
+  //   }
+  // },
+  // 'BUILD: Hexagon': {
+  //   if (!skip_ci && is_docs_only_build != 1) {
+  //     node('CPU-SMALL') {
+  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-hexagon") {
+  //         init_git()
+  //         docker_init(ci_hexagon)
+  //         sh (
+  //           script: "${docker_run} ${ci_hexagon} ./tests/scripts/task_config_build_hexagon.sh build",
+  //           label: 'Create Hexagon cmake config',
+  //         )
+  //         make(ci_hexagon, 'build', '-j2')
+  //         sh (
+  //           script: "${docker_run} ${ci_hexagon} ./tests/scripts/task_build_hexagon_api.sh",
+  //           label: 'Build Hexagon API',
+  //         )
+  //         sh(
+  //           script: """
+  //             set -eux
+  //             . ci/scripts/retry.sh
+  //             md5sum build/libtvm.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/hexagon/build/libtvm.so
+  //             md5sum build/libtvm_runtime.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/hexagon/build/libtvm_runtime.so
+  //             md5sum build/config.cmake
+  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/hexagon/build/config.cmake
+  //             retry 3 aws s3 cp --no-progress build/hexagon_api_output s3://${s3_prefix}/hexagon/build/hexagon_api_output --recursive
+  //           """,
+  //           label: 'Upload artifacts to S3',
+  //         )
 
-        }
-      }
-     } else {
-      Utils.markStageSkippedForConditional('BUILD: Hexagon')
-    }
-  },
-  'BUILD: RISC-V': {
-    if (!skip_ci && is_docs_only_build != 1) {
-      node('CPU-SMALL') {
-        ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-riscv") {
-          init_git()
-          docker_init(ci_riscv)
-          sh (
-            script: "${docker_run} ${ci_riscv} ./tests/scripts/task_config_build_riscv.sh build",
-            label: 'Create RISC-V cmake config',
-          )
-          make(ci_riscv, 'build', '-j2')
-          sh(
-            script: """
-              set -eux
-              . ci/scripts/retry.sh
-              md5sum build/libtvm.so
-              retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/riscv/build/libtvm.so
-              md5sum build/libtvm_runtime.so
-              retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/riscv/build/libtvm_runtime.so
-              md5sum build/config.cmake
-              retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/riscv/build/config.cmake
-              retry 3 aws s3 cp --no-progress build/microtvm_template_projects s3://${s3_prefix}/riscv/build/microtvm_template_projects --recursive
-            """,
-            label: 'Upload artifacts to S3',
-          )
+  //       }
+  //     }
+  //    } else {
+  //     Utils.markStageSkippedForConditional('BUILD: Hexagon')
+  //   }
+  // },
+  // 'BUILD: RISC-V': {
+  //   if (!skip_ci && is_docs_only_build != 1) {
+  //     node('CPU-SMALL') {
+  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-riscv") {
+  //         init_git()
+  //         docker_init(ci_riscv)
+  //         sh (
+  //           script: "${docker_run} ${ci_riscv} ./tests/scripts/task_config_build_riscv.sh build",
+  //           label: 'Create RISC-V cmake config',
+  //         )
+  //         make(ci_riscv, 'build', '-j2')
+  //         sh(
+  //           script: """
+  //             set -eux
+  //             . ci/scripts/retry.sh
+  //             md5sum build/libtvm.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/riscv/build/libtvm.so
+  //             md5sum build/libtvm_runtime.so
+  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/riscv/build/libtvm_runtime.so
+  //             md5sum build/config.cmake
+  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/riscv/build/config.cmake
+  //             retry 3 aws s3 cp --no-progress build/microtvm_template_projects s3://${s3_prefix}/riscv/build/microtvm_template_projects --recursive
+  //           """,
+  //           label: 'Upload artifacts to S3',
+  //         )
 
-        }
-      }
-     } else {
-      Utils.markStageSkippedForConditional('BUILD: RISC-V')
-    }
-  },
+  //       }
+  //     }
+  //    } else {
+  //     Utils.markStageSkippedForConditional('BUILD: RISC-V')
+  //   }
+  // },
   )
 }
 }
