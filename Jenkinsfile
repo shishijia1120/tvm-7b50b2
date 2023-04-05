@@ -138,8 +138,7 @@ def init_git() {
     ).trim()
   }
   sh (
-    // script: "git -c user.name=TVM-Jenkins -c user.email=jenkins@tvm.apache.org merge ${upstream_revision}",
-    script: "git -c user.name=ssj -c user.email=3319294576@qq.com merge ${upstream_revision}",
+    script: "git -c user.name=TVM-Jenkins -c user.email=jenkins@tvm.apache.org merge ${upstream_revision}",
     label: 'Merge to origin/v0.10.0'
   )
 
@@ -188,7 +187,7 @@ def docker_init(image) {
 
 def should_skip_slow_tests(pr_number) {
   withCredentials([string(
-    credentialsId: '07839001-1dfc-4d2a-b074-5b152b5196f',
+    credentialsId: '881a7219-25dc-4939-a125-5f3093f67058',
     variable: 'GITHUB_TOKEN',
   )]) {
     // Exit code of 1 means run slow tests, exit code of 0 means skip slow tests
@@ -198,8 +197,7 @@ def should_skip_slow_tests(pr_number) {
       label: 'Check if CI should run slow tests',
     )
   }
-  // return result == 0
-  return 1 == 0
+  return result == 0
 }
 
 def cancel_previous_build() {
@@ -251,7 +249,7 @@ def should_skip_ci(pr_number) {
     return true
   }
   withCredentials([string(
-    credentialsId: '07839001-1dfc-4d2a-b074-5b152b5196f',
+    credentialsId: '881a7219-25dc-4939-a125-5f3093f67058',
     variable: 'GITHUB_TOKEN',
     )]) {
     // Exit code of 1 means run full CI (or the script had an error, so run
@@ -262,8 +260,7 @@ def should_skip_ci(pr_number) {
       label: 'Check if CI should be skipped',
     )
   }
-  // return git_skip_ci_code == 0
-  return 1 == 0
+  return git_skip_ci_code == 0
 }
 
 def check_pr(pr_number) {
@@ -272,7 +269,7 @@ def check_pr(pr_number) {
     return false
   }
   withCredentials([string(
-    credentialsId: '07839001-1dfc-4d2a-b074-5b152b5196f',
+    credentialsId: '881a7219-25dc-4939-a125-5f3093f67058',
     variable: 'GITHUB_TOKEN',
     )]) {
     sh (
@@ -289,7 +286,7 @@ def prepare() {
       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/prepare") {
         init_git()
 
-        // check_pr(env.CHANGE_ID)
+        check_pr(env.CHANGE_ID)
 
         if (env.DETERMINE_DOCKER_IMAGES == 'yes') {
           sh(
@@ -379,10 +376,8 @@ def prepare() {
           script: './ci/scripts/git_change_docs.sh',
           label: 'Check for docs only changes',
         )
-        // skip_ci = should_skip_ci(env.CHANGE_ID)
-        // skip_slow_tests = should_skip_slow_tests(env.CHANGE_ID)
-        skip_ci = false
-        skip_slow_tests =false
+        skip_ci = should_skip_ci(env.CHANGE_ID)
+        skip_slow_tests = should_skip_slow_tests(env.CHANGE_ID)
         rebuild_docker_images = sh (
           returnStatus: true,
           script: './ci/scripts/git_change_docker.sh',
@@ -499,28 +494,6 @@ def build_image(image_name) {
 def build_docker_images() {
   stage('Docker Image Build') {
     parallel(
-      'ci_arm': {
-        node('ARM') {
-          timeout(time: max_time, unit: 'MINUTES') {
-            init_git()
-            // We're purposefully not setting the built image here since they
-            // are not yet being uploaded to tlcpack
-            // ci_arm = build_image('ci_arm')
-            built_ci_arm = build_image('ci_arm');
-          }
-        }
-      },
-      'ci_cortexm': {
-        node('CPU') {
-          timeout(time: max_time, unit: 'MINUTES') {
-            init_git()
-            // We're purposefully not setting the built image here since they
-            // are not yet being uploaded to tlcpack
-            // ci_cortexm = build_image('ci_cortexm')
-            built_ci_cortexm = build_image('ci_cortexm');
-          }
-        }
-      },
       'ci_cpu': {
         node('CPU') {
           timeout(time: max_time, unit: 'MINUTES') {
@@ -543,28 +516,6 @@ def build_docker_images() {
           }
         }
       },
-      'ci_hexagon': {
-        node('CPU') {
-          timeout(time: max_time, unit: 'MINUTES') {
-            init_git()
-            // We're purposefully not setting the built image here since they
-            // are not yet being uploaded to tlcpack
-            // ci_hexagon = build_image('ci_hexagon')
-            built_ci_hexagon = build_image('ci_hexagon');
-          }
-        }
-      },
-      'ci_i386': {
-        node('CPU') {
-          timeout(time: max_time, unit: 'MINUTES') {
-            init_git()
-            // We're purposefully not setting the built image here since they
-            // are not yet being uploaded to tlcpack
-            // ci_i386 = build_image('ci_i386')
-            built_ci_i386 = build_image('ci_i386');
-          }
-        }
-      },
       'ci_lint': {
         node('CPU') {
           timeout(time: max_time, unit: 'MINUTES') {
@@ -584,28 +535,6 @@ def build_docker_images() {
             // are not yet being uploaded to tlcpack
             // ci_minimal = build_image('ci_minimal')
             built_ci_minimal = build_image('ci_minimal');
-          }
-        }
-      },
-      'ci_riscv': {
-        node('CPU') {
-          timeout(time: max_time, unit: 'MINUTES') {
-            init_git()
-            // We're purposefully not setting the built image here since they
-            // are not yet being uploaded to tlcpack
-            // ci_riscv = build_image('ci_riscv')
-            built_ci_riscv = build_image('ci_riscv');
-          }
-        }
-      },
-      'ci_wasm': {
-        node('CPU') {
-          timeout(time: max_time, unit: 'MINUTES') {
-            init_git()
-            // We're purposefully not setting the built image here since they
-            // are not yet being uploaded to tlcpack
-            // ci_wasm = build_image('ci_wasm')
-            built_ci_wasm = build_image('ci_wasm');
           }
         }
       },
@@ -849,193 +778,6 @@ stage('Build') {
       Utils.markStageSkippedForConditional('BUILD: CPU MINIMAL')
     }
   },
-  // 'BUILD: WASM': {
-  //   if (!skip_ci && is_docs_only_build != 1) {
-  //     node('CPU-SMALL') {
-  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-wasm") {
-  //         init_git()
-  //         docker_init(ci_wasm)
-  //         sh (
-  //           script: "${docker_run} ${ci_wasm} ./tests/scripts/task_config_build_wasm.sh build",
-  //           label: 'Create WASM cmake config',
-  //         )
-  //         make(ci_wasm, 'build', '-j2')
-  //         cpp_unittest(ci_wasm)
-  //         timeout(time: max_time, unit: 'MINUTES') {
-  //           ci_setup(ci_wasm)
-  //           sh (
-  //             script: "${docker_run} ${ci_wasm} ./tests/scripts/task_web_wasm.sh",
-  //             label: 'Run WASM lint and tests',
-  //           )
-  //         }
-  //       }
-  //     }
-  //   } else {
-  //     Utils.markStageSkippedForConditional('BUILD: WASM')
-  //   }
-  // },
-  // 'BUILD: i386': {
-  //   if (!skip_ci && is_docs_only_build != 1) {
-  //     node('CPU-SMALL') {
-  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-i386") {
-  //         init_git()
-  //         docker_init(ci_i386)
-  //         sh (
-  //           script: "${docker_run} ${ci_i386} ./tests/scripts/task_config_build_i386.sh build",
-  //           label: 'Create i386 cmake config',
-  //         )
-  //         make(ci_i386, 'build', '-j2')
-  //         sh(
-  //           script: """
-  //             set -eux
-  //             . ci/scripts/retry.sh
-  //             md5sum build/libtvm.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/i386/build/libtvm.so
-  //             md5sum build/libtvm_runtime.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/i386/build/libtvm_runtime.so
-  //             md5sum build/config.cmake
-  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/i386/build/config.cmake
-  //           """,
-  //           label: 'Upload artifacts to S3',
-  //         )
-
-  //       }
-  //     }
-  //   } else {
-  //     Utils.markStageSkippedForConditional('BUILD: i386')
-  //   }
-  // },
-  // 'BUILD: arm': {
-  //   if (!skip_ci && is_docs_only_build != 1) {
-  //     node('ARM-SMALL') {
-  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-arm") {
-  //         init_git()
-  //         docker_init(ci_arm)
-  //         sh (
-  //           script: "${docker_run} ${ci_arm} ./tests/scripts/task_config_build_arm.sh build",
-  //           label: 'Create ARM cmake config',
-  //         )
-  //         make(ci_arm, 'build', '-j4')
-  //         sh(
-  //           script: """
-  //             set -eux
-  //             . ci/scripts/retry.sh
-  //             md5sum build/libtvm.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/arm/build/libtvm.so
-  //             md5sum build/libtvm_runtime.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/arm/build/libtvm_runtime.so
-  //             md5sum build/config.cmake
-  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/arm/build/config.cmake
-  //           """,
-  //           label: 'Upload artifacts to S3',
-  //         )
-
-  //       }
-  //     }
-  //    } else {
-  //     Utils.markStageSkippedForConditional('BUILD: arm')
-  //   }
-  // },
-  // 'BUILD: Cortex-M': {
-  //   if (!skip_ci && is_docs_only_build != 1) {
-  //     node('CPU-SMALL') {
-  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-cortexm") {
-  //         init_git()
-  //         docker_init(ci_cortexm)
-  //         sh (
-  //           script: "${docker_run} ${ci_cortexm} ./tests/scripts/task_config_build_cortexm.sh build",
-  //           label: 'Create Cortex-M cmake config',
-  //         )
-  //         make(ci_cortexm, 'build', '-j2')
-  //         sh(
-  //           script: """
-  //             set -eux
-  //             . ci/scripts/retry.sh
-  //             md5sum build/libtvm.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/cortexm/build/libtvm.so
-  //             md5sum build/libtvm_runtime.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/cortexm/build/libtvm_runtime.so
-  //             md5sum build/config.cmake
-  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/cortexm/build/config.cmake
-  //             retry 3 aws s3 cp --no-progress build/microtvm_template_projects s3://${s3_prefix}/cortexm/build/microtvm_template_projects --recursive
-  //           """,
-  //           label: 'Upload artifacts to S3',
-  //         )
-
-  //       }
-  //     }
-  //    } else {
-  //     Utils.markStageSkippedForConditional('BUILD: Cortex-M')
-  //   }
-  // },
-  // 'BUILD: Hexagon': {
-  //   if (!skip_ci && is_docs_only_build != 1) {
-  //     node('CPU-SMALL') {
-  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-hexagon") {
-  //         init_git()
-  //         docker_init(ci_hexagon)
-  //         sh (
-  //           script: "${docker_run} ${ci_hexagon} ./tests/scripts/task_config_build_hexagon.sh build",
-  //           label: 'Create Hexagon cmake config',
-  //         )
-  //         make(ci_hexagon, 'build', '-j2')
-  //         sh (
-  //           script: "${docker_run} ${ci_hexagon} ./tests/scripts/task_build_hexagon_api.sh",
-  //           label: 'Build Hexagon API',
-  //         )
-  //         sh(
-  //           script: """
-  //             set -eux
-  //             . ci/scripts/retry.sh
-  //             md5sum build/libtvm.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/hexagon/build/libtvm.so
-  //             md5sum build/libtvm_runtime.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/hexagon/build/libtvm_runtime.so
-  //             md5sum build/config.cmake
-  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/hexagon/build/config.cmake
-  //             retry 3 aws s3 cp --no-progress build/hexagon_api_output s3://${s3_prefix}/hexagon/build/hexagon_api_output --recursive
-  //           """,
-  //           label: 'Upload artifacts to S3',
-  //         )
-
-  //       }
-  //     }
-  //    } else {
-  //     Utils.markStageSkippedForConditional('BUILD: Hexagon')
-  //   }
-  // },
-  // 'BUILD: RISC-V': {
-  //   if (!skip_ci && is_docs_only_build != 1) {
-  //     node('CPU-SMALL') {
-  //       ws("workspace/exec_${env.EXECUTOR_NUMBER}/tvm/build-riscv") {
-  //         init_git()
-  //         docker_init(ci_riscv)
-  //         sh (
-  //           script: "${docker_run} ${ci_riscv} ./tests/scripts/task_config_build_riscv.sh build",
-  //           label: 'Create RISC-V cmake config',
-  //         )
-  //         make(ci_riscv, 'build', '-j2')
-  //         sh(
-  //           script: """
-  //             set -eux
-  //             . ci/scripts/retry.sh
-  //             md5sum build/libtvm.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm.so s3://${s3_prefix}/riscv/build/libtvm.so
-  //             md5sum build/libtvm_runtime.so
-  //             retry 3 aws s3 cp --no-progress build/libtvm_runtime.so s3://${s3_prefix}/riscv/build/libtvm_runtime.so
-  //             md5sum build/config.cmake
-  //             retry 3 aws s3 cp --no-progress build/config.cmake s3://${s3_prefix}/riscv/build/config.cmake
-  //             retry 3 aws s3 cp --no-progress build/microtvm_template_projects s3://${s3_prefix}/riscv/build/microtvm_template_projects --recursive
-  //           """,
-  //           label: 'Upload artifacts to S3',
-  //         )
-
-  //       }
-  //     }
-  //    } else {
-  //     Utils.markStageSkippedForConditional('BUILD: RISC-V')
-  //   }
-  // },
   )
 }
 }
@@ -3772,51 +3514,6 @@ stage('Test') {
   'integration: CPU 4 of 4': {
     shard_run_integration_CPU_4_of_4()
   },
-  // 'python: i386 1 of 3': {
-  //   shard_run_python_i386_1_of_3()
-  // },
-  // 'python: i386 2 of 3': {
-  //   shard_run_python_i386_2_of_3()
-  // },
-  // 'python: i386 3 of 3': {
-  //   shard_run_python_i386_3_of_3()
-  // },
-  // 'test: Hexagon 1 of 8': {
-  //   shard_run_test_Hexagon_1_of_8()
-  // },
-  // 'test: Hexagon 2 of 8': {
-  //   shard_run_test_Hexagon_2_of_8()
-  // },
-  // 'test: Hexagon 3 of 8': {
-  //   shard_run_test_Hexagon_3_of_8()
-  // },
-  // 'test: Hexagon 4 of 8': {
-  //   shard_run_test_Hexagon_4_of_8()
-  // },
-  // 'test: Hexagon 5 of 8': {
-  //   shard_run_test_Hexagon_5_of_8()
-  // },
-  // 'test: Hexagon 6 of 8': {
-  //   shard_run_test_Hexagon_6_of_8()
-  // },
-  // 'test: Hexagon 7 of 8': {
-  //   shard_run_test_Hexagon_7_of_8()
-  // },
-  // 'test: Hexagon 8 of 8': {
-  //   shard_run_test_Hexagon_8_of_8()
-  // },
-  // 'integration: aarch64 1 of 4': {
-  //   shard_run_integration_aarch64_1_of_4()
-  // },
-  // 'integration: aarch64 2 of 4': {
-  //   shard_run_integration_aarch64_2_of_4()
-  // },
-  // 'integration: aarch64 3 of 4': {
-  //   shard_run_integration_aarch64_3_of_4()
-  // },
-  // 'integration: aarch64 4 of 4': {
-  //   shard_run_integration_aarch64_4_of_4()
-  // },
   'topi: GPU 1 of 3': {
     shard_run_topi_GPU_1_of_3()
   },
@@ -3844,57 +3541,6 @@ stage('Test') {
   'frontend: GPU 6 of 6': {
     shard_run_frontend_GPU_6_of_6()
   },
-  // 'topi: aarch64 1 of 2': {
-  //   shard_run_topi_aarch64_1_of_2()
-  // },
-  // 'topi: aarch64 2 of 2': {
-  //   shard_run_topi_aarch64_2_of_2()
-  // },
-  // 'frontend: aarch64 1 of 2': {
-  //   shard_run_frontend_aarch64_1_of_2()
-  // },
-  // 'frontend: aarch64 2 of 2': {
-  //   shard_run_frontend_aarch64_2_of_2()
-  // },
-  // 'test: Cortex-M 1 of 12': {
-  //   shard_run_test_Cortex_M_1_of_12()
-  // },
-  // 'test: Cortex-M 2 of 12': {
-  //   shard_run_test_Cortex_M_2_of_12()
-  // },
-  // 'test: Cortex-M 3 of 12': {
-  //   shard_run_test_Cortex_M_3_of_12()
-  // },
-  // 'test: Cortex-M 4 of 12': {
-  //   shard_run_test_Cortex_M_4_of_12()
-  // },
-  // 'test: Cortex-M 5 of 12': {
-  //   shard_run_test_Cortex_M_5_of_12()
-  // },
-  // 'test: Cortex-M 6 of 12': {
-  //   shard_run_test_Cortex_M_6_of_12()
-  // },
-  // 'test: Cortex-M 7 of 12': {
-  //   shard_run_test_Cortex_M_7_of_12()
-  // },
-  // 'test: Cortex-M 8 of 12': {
-  //   shard_run_test_Cortex_M_8_of_12()
-  // },
-  // 'test: Cortex-M 9 of 12': {
-  //   shard_run_test_Cortex_M_9_of_12()
-  // },
-  // 'test: Cortex-M 10 of 12': {
-  //   shard_run_test_Cortex_M_10_of_12()
-  // },
-  // 'test: Cortex-M 11 of 12': {
-  //   shard_run_test_Cortex_M_11_of_12()
-  // },
-  // 'test: Cortex-M 12 of 12': {
-  //   shard_run_test_Cortex_M_12_of_12()
-  // },
-  // 'test: RISC-V 1 of 1': {
-  //   shard_run_test_RISC_V_1_of_1()
-  // },
   'unittest: CPU MINIMAL': {
     run_unittest_minimal()
   },
@@ -4388,8 +4034,6 @@ if (rebuild_docker_images) {
 
 lint()
 
-// build()
+build()
 
 test()
-
-// deploy()
